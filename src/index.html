@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Barlow|Montserrat|Open+Sans|Roboto&display=swap" rel="stylesheet">
+    <title>Time</title>
+    <!-- cd "C:\Users\telma\OneDrive\Рабочий стол\My Work\max" -->
+</head>
+<body>
+    <header>
+        <strong>Time</strong>
+        <nav>
+            <ul>
+                <div><img src="../files/svg/003-menu.svg"></div>
+                <div id="min-btn"><img src="../files/svg/001-substract.svg"></div>
+                <div id='close-btn'><img src="../files/svg/002-cross.svg"></div>        
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="clock">
+            <div class="h">12</div>:
+            <div class="m">35</div>:
+            <div class="s">59</div>
+        </div>
+
+        <canvas id='c'></canvas>
+    </main>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        html, body{
+            height: 100vh;
+            width: 100vw;
+        }
+        body{
+            display: grid;
+            grid-template-rows: 24px auto;
+            font-family: 'montserrat';
+            overflow: hidden;
+        }
+        header{
+            display: grid;
+            grid-template-columns: auto 96px;
+            background-color: aqua;
+
+        }
+        header strong, header span{
+            -webkit-app-region: drag;
+            height: 100%;
+            font-size: 18px;
+            padding-left: 6px;
+        }
+        header nav{
+            height: 100%;
+        }
+        header nav ul{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+
+        }
+        header img{
+            width: 21px;
+        }
+        header div{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        header div:hover{
+            background: #0003;
+        }
+        header div:nth-child(3):hover{
+            background: rgba(255, 65, 65);
+        }
+        main{
+            overflow: auto;
+        }
+        main .clock{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            font-size: 64px;
+            font-weight: bolder;
+
+            display:none
+        }
+        main .clock .s{
+            color: #0007;
+        }
+    </style>
+    <script>
+        const remote = require('electron').remote;
+
+        document.getElementById("min-btn").addEventListener("click", (e) => {
+            let window = remote.getCurrentWindow();
+            window.minimize();
+        });
+
+        // add button
+        // document.getElementById("max-btn").addEventListener("click", (e) => {
+        //     let window = remote.getCurrentWindow();
+        //     if (!window.isMaximized()) {
+        //         window.maximize();
+        //     } else {
+        //         window.unmaximize();
+        //     }
+        // });
+
+        document.getElementById("close-btn").addEventListener("click", (e) => {
+            let window = remote.getCurrentWindow();
+            window.close();
+        }); 
+
+        var timee = new Date()
+        let h = document.querySelector(".h")
+        let m = document.querySelector(".m")
+        let s = document.querySelector(".s")
+        
+        function tick() {
+            requestAnimationFrame(tick)
+
+            let hh = timee.getHours()
+            let mm = timee.getMinutes()
+            let ss = timee.getSeconds()
+
+            if(hh.length != 2){
+                hh= '0'+hh
+            }
+            if (mm.length != 2) {
+                mm = '0' + mm
+            }
+            if (ss.length != 2) {
+                ss = '0' + ss
+            }
+
+            h.innerHTML = hh
+            m.innerHTML = mm
+            s.innerHTML = ss
+        }
+        requestAnimationFrame(tick)
+
+
+    </script>
+    <script src="js/render.js" defer></script>
+</body>
+</html>

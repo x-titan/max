@@ -1,0 +1,8 @@
+{
+    "name":"data",
+    "current":{
+        "src":"./src/examples/",
+        "name":"readme",
+        "format":"txt"
+    }
+}
