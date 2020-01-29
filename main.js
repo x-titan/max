@@ -1,9 +1,9 @@
 const path = require('path')
 const url = require('url')
 const { app, BrowserWindow } = require('electron')
-//require("uptade-electron-app")({
- //   uptadeInterval: '1 hour'
-//})
+// require("uptade-electron-app")({
+//     uptadeInterval: '1 hour'
+// })
 // cd "C:\Users\telma\OneDrive\Рабочий стол\My Work\max"
 
 var win = null // Create Main Window
