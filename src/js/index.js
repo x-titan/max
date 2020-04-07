@@ -1,36 +1,65 @@
-const fs = require('fs')
+const remote = require("electron").remote
 const { $, search, $toogle } = require("c:/Users/telma/OneDrive/Рабочий стол/My Work/fast_code/index.js")
+const { create, save, open } = require("./js/file.js")
+const { startTab, createTab, reset_tab_data } = require("./js/tab.js")
 
-setTimeout(() => {
-    var header = search('header')
-    var startPage = search('#startPage')
-    $toogle(header, 'hide')
-    let name = search('#name').value
+$("#min-btn").on("click", (e) => {
+    e.preventDefault()
+    let window = remote.getCurrentWindow()
+    reset_tab_data()
+    window.minimize()
+})
 
-    fs.readFile('./src/examples/' + name + '.txt', "utf-8", (error, data) => {
-        if (error) {
-            console.log(error)
-            return
-        }
-        console.log(data)
-        search(".textarea").value = data
-    })
+// Add button // // //
+// $("max-btn").on("click", (e) => {
+//     let window = remote.getCurrentWindow()
+//     if (!window.isMaximized()) {
+//         window.maximize()
+//     } else {
+//         window.unmaximize()
+//     }
+// })
 
+$("#close-btn").on("click", (e) => {
+    e.preventDefault()
+    reset_tab_data()
+    let window = remote.getCurrentWindow()
     setTimeout(() => {
-        $toogle(startPage, 'hide')
-    }, 800)
-}, 1200)
+        window.close()
+    }, 200)
+})
 
 // begin
-$('#save').on('click', () => {
-    var name = search('#name').value ? search('#name').value : 'name'
-    var text = search('.textarea').value ? search('.textarea').value : 'text'
-    create(name, text)
+$('#save_file').on('click', (e) => {
+    e.preventDefault()
+    var data = search(".tab.active").getAttribute("data")
+    var name = search(".tab.active").getAttribute("name")
+    var text = search(".textarea.active").value
+    save(data, name, text)
+    reset_tab_data()
+    console.log("save")
 })
-function create(name, text) {
-    fs.writeFile('./src/examples/' + name + '.txt', text, (error) => {
-        if (error) {
-            return console.error(err);
-        }
+
+$("#create_file").on('click', (e) => {
+    e.preventDefault()
+    create((params) => {
+        createTab(params)
+        search(".textarea").value = ""
     })
-}
+})
+
+$("#open_file").on('click', () => {
+    open((params) => {
+        createTab(params)
+    })
+})
+
+
+startTab(search(".textarea"))
+    .then((tab_list) => {
+        search("#Tabs").innerHTML = ""
+        for (i = 0; i < tab_list.length; i++) {
+            search("#Tabs").appendChild(tab_list[i])
+        }
+
+    })

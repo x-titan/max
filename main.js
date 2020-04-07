@@ -15,7 +15,7 @@ function create() {
     win = new BrowserWindow({
         width: 1000,
         height: 600,
-        icon: __dirname + '/files/img/icon.png',
+        icon: __dirname + 'src/files/img/logo.png',
         frame: false,
         webPreferences: {
             nodeIntegration: true
@@ -29,7 +29,7 @@ function create() {
     }))
 
     // Add icon
-    win.setIcon(path.join(__dirname, '/files/img/icon.png'))
+    win.setIcon(path.join(__dirname, 'src/files/img/logo.png'))
 
     // Add Name
     win.setTitle('Editor Max')
@@ -61,6 +61,7 @@ function create() {
     win.on('closed', () => {
         win = null
         devtools = null
+        app.quit()
     })
 }
 

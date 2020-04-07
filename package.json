@@ -4,17 +4,22 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-packager ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "electron": "^7.1.7",
+    "promise-fs": "^2.1.1",
     "update-electron-app": "^1.5.0"
   },
   "build": {
     "win": {
-      "icon": "./src/assets/icon.png"
+      "icon": "./src/files/img/logo.png"
     }
+  },
+  "devDependencies": {
+    "electron-packager": "^14.2.0"
   }
 }
