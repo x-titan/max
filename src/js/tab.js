@@ -1,7 +1,7 @@
 const fs = require("promise-fs")
 const { data, splitter } = require("./file.js")
 const { context } = require("./context.js")
-const { $, search, $toogle } = require("c:/Users/telma/OneDrive/Рабочий стол/My Work/fast_code/index.js")
+const { $, search, $toggle } = require("./css.js")
 
 /**
  * Write JSON file "data.json".
@@ -44,15 +44,18 @@ async function tab_data() {
         .then(z => {
             x = JSON.parse(z)
             for (let i = 0; i < x.all.length; i++) {
-                txt.push({
-                    src: x.all[i].src,
-                    name: x.all[i].name,
-                    opened: x.all[i].opened,
-                    content: x.all[i].opened ? fs.readFile(x.all[i].src + x.all[i].name, "utf-8").then((content) => { return content }) : "none"
+                fs.readFile(x.all[i].src + x.all[i].name, "utf-8").then((content)=>{
+                    txt.push({
+                        src: x.all[i].src,
+                        name: x.all[i].name,
+                        opened: x.all[i].opened,
+                        content: x.all[i].opened ? content : "none"
+                    })
                 })
             }
             return txt
         })
+    reset_tab_data()
     return result
 }
 /**

@@ -1,8 +1,10 @@
 const remote = require("electron").remote
-const { $, search, $toogle } = require("c:/Users/telma/OneDrive/Рабочий стол/My Work/fast_code/index.js")
+const { $, search, $toggle } = require("./js/css.js")
 const { create, save, open } = require("./js/file.js")
 const { startTab, createTab, reset_tab_data } = require("./js/tab.js")
 
+
+console.log($)
 $("#min-btn").on("click", (e) => {
     e.preventDefault()
     let window = remote.getCurrentWindow()

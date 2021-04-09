@@ -120,6 +120,7 @@ function create(callback) {
  * }} params src: A path to a file. name: File name.
  */
 async function open(callback) {
+    console.log("open: ")
     dialog.showOpenDialog({
         filters: [
             { name: 'Any', extensions: ['*'] },
@@ -128,7 +129,9 @@ async function open(callback) {
             { name: 'JSON', extensions: ['json'] }
         ]
     }).then((params) => {
+        console.log(params)
         fs.readFile(params.filePaths[0], { encoding: "utf8" }).then((content) => {
+            console.log(content)
             var filePath = splitter({filePath: params.filePaths[0]},"\\")
 
             callback(filePath)
@@ -142,7 +145,7 @@ async function open(callback) {
  */
 async function data(json) {
     // var link = "resources/app/src/files/data/data.json"
-    var link = "src/files/data/data.json"
+    var link = "./resources/app/src/files/data/data.json"
 
     if (json){
         return await fs.writeFile(link, json)

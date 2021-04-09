@@ -1,7 +1,7 @@
 const fs = require("promise-fs")
 const { Menu, MenuItem } = require("electron").remote
 const { rename, reset_tab_data } = require("./file.js")
-const { $, search, $toogle } = require("c:/Users/telma/OneDrive/Рабочий стол/My Work/fast_code/index.js")
+const { $, search, $toggle } = require("./css.js")
 const { step } = require("./promise.js")
 
 /**
@@ -27,7 +27,7 @@ function context(params) {
             }))
             popup.append(new MenuItem({
                 label: "Close", click() {
-                    params.object.outerHTML = ''
+                    search(".textarea").value = params.object.outerHTML = ''
                     reset_tab_data()
                 }
             }))
@@ -73,12 +73,12 @@ function modal(params) {
     if (params) {
         switch (params.type) {
             case "rename":
-                $(".modal").toogle("close")
-                $(".rename").toogle("x")
+                $(".modal").toggle("close")
+                $(".rename").toggle("x")
                 search("#rename").value = params.name
                 search(".rename_close").onclick = () => {
-                    $(".modal").toogle("close")
-                    $(".rename").toogle("x")
+                    $(".modal").toggle("close")
+                    $(".rename").toggle("x")
                 }
                 search(".rename_button").onclick = () => {
 
@@ -93,8 +93,8 @@ function modal(params) {
                     }).then(() => {
                         params.object.innerHTML = result
                         params.object.setAttribute("name", result)
-                        $(".modal").toogle("close")
-                        $(".rename").toogle("x")
+                        $(".modal").toggle("close")
+                        $(".rename").toggle("x")
                     })
                 }
                 break
