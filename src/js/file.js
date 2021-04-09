@@ -145,7 +145,7 @@ async function open(callback) {
  */
 async function data(json) {
     // var link = "resources/app/src/files/data/data.json"
-    var link = "./resources/app/src/files/data/data.json"
+    var link = "src/files/data/data.json"
 
     if (json){
         return await fs.writeFile(link, json)
