@@ -10,28 +10,20 @@ const { dialog } = require("electron").remote
  * @returns {{
  *     src: string,
  *     name: string,
- * }}
- */
-/**
- * Split to path. In resultining fs modules path "\".
- * @param {{
- *     allPath: string
- * }} params allPath: File path + file name.
- * @param {string} split splitting element
- * @returns {{
+ *     content?: string
+ * }|{
  *     src: string,
  *     name: string,
- *     content: string
  * }}
  */
 function splitter(params, split) {
-    var allPath = params.filePath.split(split)
-    var result = {}
+    let allPath = params.filePath.split(split)
+    let result = {}
     result.name = allPath[allPath.length - 1]
     allPath.length--
     result.src = allPath.join('/') + '/'
 
-    if(params.content!= undefined){
+    if (params.content != undefined) {
         result.content = params.content
     }
 
@@ -101,13 +93,12 @@ function create(callback) {
             { name: 'JSON', extensions: ['json'] }
         ]
     }).then((params) => {
-            fs.writeFile(params.filePath, '')
-                .then((a, b) => {
-                    console.log(`File ${params.filePath} created`)
-
-                    callback({ filePath: params.filePath })
-                })
-        })
+        fs.writeFile(params.filePath, '')
+            .then((a, b) => {
+                console.log(`File ${params.filePath} created`)
+                callback({ filePath: params.filePath })
+            })
+    })
 }
 
 /**
@@ -129,28 +120,35 @@ async function open(callback) {
             { name: 'JSON', extensions: ['json'] }
         ]
     }).then((params) => {
-        console.log(params)
-        fs.readFile(params.filePaths[0], { encoding: "utf8" }).then((content) => {
-            console.log(content)
-            var filePath = splitter({filePath: params.filePaths[0]},"\\")
-
-            callback(filePath)
+        fs.readFile(params.filePaths[0], { encoding: "utf8" }).then(() => {
+            callback(splitter({ filePath: params.filePaths[0] }, "\\"))
         })
     })
 }
 /**
  * Return fs module in path "data.json".
- * If params !undefined to "fs.writeFile" else  "fs.readFile"
- * @param {string | JSON} [json] writing data to "data.json".
+ * If params defined then "fs.writeFile" else  "fs.readFile"
+ * @param { string | JSON } [json] writing data to "data.json".
  */
 async function data(json) {
-    // var link = "resources/app/src/files/data/data.json"
-    var link = "src/files/data/data.json"
+    console.log("data#" + (json ? "write" : "read"))
+    // let link = "resources/app/src/files/data/data.json"
+    let link = "src/files/data/data.json"
 
-    if (json){
-        return await fs.writeFile(link, json)
+    if (json) return await fs.writeFile(link, json)
+    else return await fs.readFile(link)
+}
+data.format=()=>{
+    return {
+        name: "data",
+        format: {
+            src: "string",
+            name: "string",
+            type: "string",
+            opened: "boolean"
+        },
+        all: []
     }
-    return await fs.readFile(link)
 }
 
 
@@ -162,38 +160,3 @@ exports.save = save
 exports.write = write
 exports.open = open
 exports.data = data
-
-// BUGS
-
-/**
- * Write JSON file "data.json".
- * Reading all Tabs and writing "data.json" file.
- */
-function reset_tab_data() {
-    var tabs = search("#Tabs").children
-    var json
-    var d = {
-        name: "data",
-        format: {
-            src: "string",
-            name: "string",
-            type: "string",
-            opened: "boolean"
-        },
-        all: []
-    }
-    for (let i = 0; i < tabs.length; i++) {
-        const x = tabs[i]
-
-        d.all[i] = {
-            src: x.attributes.data.value,
-            name: x.attributes.name.value,
-            type: "txt",
-            opened: x.classList.contains("active") ? true : false
-        }
-    }
-    json = JSON.stringify(d)
-
-    data(json)
-}
-exports.reset_tab_data = reset_tab_data

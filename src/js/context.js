@@ -1,7 +1,7 @@
 const fs = require("promise-fs")
 const { Menu, MenuItem } = require("electron").remote
 const { rename, reset_tab_data } = require("./file.js")
-const { $, search, $toggle } = require("./css.js")
+const { $, search, add } = require("./css.js")
 const { step } = require("./promise.js")
 
 /**
@@ -12,7 +12,7 @@ const { step } = require("./promise.js")
  * }} params type: context calling type. object: HTML div or other element.
  */
 function context(params) {
-    var popup = new Menu()
+    let popup = new Menu()
     switch (params.type) {
         case "tab":
             popup.append(new MenuItem({
@@ -70,19 +70,26 @@ function context(params) {
  * }} params type: Modal window type. name, data, object: having params in function "rename".
  */
 function modal(params) {
+    let m = $("#modal"), close = () => {
+        m.add("close")
+        m.searchAll("block").forEach(x => add(x, "x"))
+    }
+
+    m.searchAll("close").forEach(x => x.onclick = () => close())
     if (params) {
         switch (params.type) {
             case "rename":
-                $(".modal").toggle("close")
-                $(".rename").toggle("x")
-                search("#rename").value = params.name
-                search(".rename_close").onclick = () => {
-                    $(".modal").toggle("close")
-                    $(".rename").toggle("x")
+                let r = $("#modal_rename"), ri = search("#rename_input")
+                m.remove("close")
+                r.remove("x")
+                ri.value = params.name
+                r.search(".rename_close").onclick = () => {
+                    close()
+                    r.add("x")
                 }
-                search(".rename_button").onclick = () => {
+                r.search(".rename_button").onclick = () => {
 
-                    var result = search("#rename").value
+                    let result = ri.value
 
                     step().then(() => {
                         rename({
@@ -93,12 +100,20 @@ function modal(params) {
                     }).then(() => {
                         params.object.innerHTML = result
                         params.object.setAttribute("name", result)
-                        $(".modal").toggle("close")
-                        $(".rename").toggle("x")
+                        m.toggle("close")
+                        r.toggle("x")
                     })
                 }
                 break
             default:
+                let n = $("#message")
+                m.remove("close")
+                n.remove("x")
+                n.search(".text").innerHTML = params.data
+                n.search(".cancel").onclick = () => {
+                    close()
+                    if (params.object) params.object.outerHTML = ''
+                }
                 break
         }
     }
@@ -106,3 +121,4 @@ function modal(params) {
 }
 
 exports.context = context
+exports.modal = modal

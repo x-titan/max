@@ -1,61 +1,55 @@
-const fs = require("promise-fs")
-const { data, splitter } = require("./file.js")
-const { context } = require("./context.js")
-const { $, search, $toggle } = require("./css.js")
+const fs = require("promise-fs"),
+    { data, splitter } = require("./file.js"),
+    { context, modal } = require("./context.js"),
+    { $, search, add, remove, contains } = require("./css.js"),
+    { dialog } = require("electron")
 
 /**
  * Write JSON file "data.json".
  * Reading all Tabs and writing "data.json" file.
  */
 function reset_tab_data() {
-    var tabs = search("#Tabs").children
-    var json
-    var d = {
-        name: "data",
-        format: {
-            src: "string",
-            name: "string",
-            type: "string",
-            opened: "boolean"
-        },
-        all: []
-    }
+    let tabs = search("#Tabs").children, d = data.format()
+
     for (let i = 0; i < tabs.length; i++) {
-        const x = tabs[i]
+        let x = tabs[i].attributes
 
         d.all[i] = {
-            src: x.attributes.data.value,
-            name: x.attributes.name.value,
+            src: x.data.value,
+            name: x.name.value,
             type: "txt",
-            opened: x.classList.contains("active") ? true : false
+            opened: contains(tabs[i], "active") ? true : false
         }
     }
-    json = JSON.stringify(d)
 
-    data(json)
+    data(JSON.stringify(d))
 }
 /**
  * Read tab data.
  */
 async function tab_data() {
-    var x = {}
-    const txt = new Array()
-    var result = data()
-        .then(z => {
-            x = JSON.parse(z)
-            for (let i = 0; i < x.all.length; i++) {
-                fs.readFile(x.all[i].src + x.all[i].name, "utf-8").then((content)=>{
-                    txt.push({
-                        src: x.all[i].src,
-                        name: x.all[i].name,
-                        opened: x.all[i].opened,
-                        content: x.all[i].opened ? content : "none"
+    console.log("tab_data")
+    let txt = new Array(),
+        result = data()
+            .then(z => {
+                try {
+                    return JSON.parse(z)
+                } catch {
+                    data(JSON.stringify(data.format()))
+                    return { all: [] }
+                }
+            })
+            .then(z => z.all.forEach(y => {
+                fs.readFile(y.src + y.name, "utf-8")
+                    .then(x => {
+                        y.content = y.opened ? x : ""
+                        txt.push(y)
                     })
-                })
-            }
-            return txt
-        })
-    reset_tab_data()
+                    .catch(x => { console.log("Fail open file", x) })
+
+                txt.push(y)
+            }))
+            .then(() => { return txt })
     return result
 }
 /**
@@ -69,43 +63,41 @@ async function tab_data() {
  * @param {HTMLTextAreaElement | HTMLObjectElement} [textarea] HTML textarea element 
  */
 function div(params, textarea) {
-    var result = document.createElement("div")
+    let result = document.createElement("div")
 
     result.setAttribute("data", params.src)
     result.setAttribute("name", params.name)
     result.innerText = params.name
 
     if (params.opened != undefined && params.opened == true) {
-        params.content.then((content)=>{
-            textarea.value = content
-        })
-        
-        result.setAttribute("class", "tab active")
-    }else{
-        result.setAttribute("class", "tab")
-    }
+        textarea.value = params.content
+        add(result, ["tab", "active"])
+    } else add(result, "tab")
 
-    result.onclick = (e) => {
+    result.onclick = e => {
         e.preventDefault()
-
-        fs.readFile(result.attributes.data.value + result.attributes.name.value)
-            .then((content) => {
-                search(".textarea").value = content
-            }).catch((error) => {
+        let z = result.attributes
+        fs.readFile(z.data.value + z.name.value)
+            .then(content => search(".textarea").value = content)
+            .catch(error => {
                 console.error(error)
+                modal({
+                    object: result,
+                    data: "File is not defined"
+                })
             })
 
-        var tabs = search("#Tabs").children
+        let tabs = search("#Tabs").children
         for (let i = 0; i < tabs.length; i++) {
-            if (tabs[i].classList.contains('active')) {
-                tabs[i].classList.remove('active')
+            if (contains(tabs[i], 'active')) {
+                remove(tabs[i], 'active')
             }
         }
         reset_tab_data()
-        result.classList.add('active')
+        add(result, 'active')
     }
 
-    result.oncontextmenu = (e) => {
+    result.oncontextmenu = e => {
         e.preventDefault()
         context({ type: "tab", object: result }).popup({ window: remote.getCurrentWindow() })
     }
@@ -117,13 +109,9 @@ function div(params, textarea) {
  * @param {HTMLTextAreaElement | HTMLObjectElement} textarea HTML textarea element.
  */
 async function startTab(textarea) {
-    const all = new Array()
-    var result = tab_data()
-        .then((z) => {
-            for (let i = 0; i < z.length; i++) {
-                var x = z[i]
-                all.push(div(x, textarea))
-            }
+    let all = new Array(), result = tab_data()
+        .then(z => {
+            for (let i = 0; i < z.length; i++) all.push(div(z[i], textarea))
             return all
         })
     return result
@@ -136,12 +124,9 @@ async function startTab(textarea) {
  * }} params scr: A path to a file. name: A title to a file
  */
 function createTab(params) {
-    var filePath
-    if(params.filePath){
-        filePath = splitter(params,"\\")
-    }else{
-        filePath = params
-    }
+    let filePath
+    if (params.filePath) filePath = splitter(params, "\\")
+    else filePath = params
     search("#Tabs").appendChild(div(filePath))
     reset_tab_data()
 }

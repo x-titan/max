@@ -14,16 +14,6 @@
 <body>
     <header class='panel'>
         <div name="linkd" class="panel alt hover_a">
-            <!-- <select class="link">
-                <p>ddddddd</p>
-                <option value="">?????</option>
-                <option value="">5</option>
-                <option value="">252</option>
-                <option value="">4524</option>
-            </select> -->
-            <a class="link">File</a>
-            <a class="link">Edit</a>
-            <a class="link">Help</a>
             <a id="create_file" class="link">CREATE</a>
             <a id="open_file" class="link">OPEN</a>
             <a id="save_file" class="link">SAVE</a>
@@ -31,7 +21,7 @@
         <strong id="DRAG"></strong>
         <nav>
             <ul>
-                <div><img src="files/svg/003-menu.svg"></div>
+                <!-- <div><img src="files/svg/003-menu.svg"></div> -->
                 <div id="min-btn"><img src="files/svg/001-substract.svg"></div>
                 <div id='close-btn'><img src="files/svg/002-cross.svg"></div>
             </ul>
@@ -46,12 +36,18 @@
         </div>
     </main>
 
-    <div class="modal footer close">
-        <div class="rename block x">
-            <input type="text" id="rename" />
+    <div id="modal" class="modal footer close">
+        <div id="modal_rename" class="rename block x">
+            <input type="text" id="rename_input" />
             <div class="button_s">
                 <button class="button cancel rename_close">CANCEL</button>
                 <button class="button rename_button">OK</button>
+            </div>
+        </div>
+        <div id="message" class="block x">
+            <div class="text"></div>
+            <div class="button_s">
+                <button class="button cancel">OK</button>
             </div>
         </div>
     </div>

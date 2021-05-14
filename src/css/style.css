@@ -1,4 +1,4 @@
-*{
+* {
     padding: 0;
     margin: 0;
     font-family: 'montserrat', sans-serif;
@@ -6,7 +6,6 @@
     outline: none;
     border: none;
     font-size: 14px;
-
     --header: ;
     --header-tab-height: 32px;
     --header-alt-height: 26px;
@@ -14,95 +13,107 @@
     --header-close-second: #E71D36;
     --header-bacground: #011627;
     --header-color: #FDFFFC;
-
     --body: ;
     --body-grid-var: calc(var(--header-tab-height) + var(--header-alt-height));
-
     --main: ;
     --main-bacground: #FDFFFC;
     --main-color: #1E2429;
-    
     --button: ;
     --button-bacground: #2EC4B6;
     --button-color: #1E2429;
 }
-#DRAG{
+
+#DRAG {
     grid-area: drag;
     -webkit-app-region: drag;
 }
-body, header, main{
+
+body, header, main {
     overflow: hidden;
 }
-body, header{
+
+body, header {
     display: grid;
 }
-#Tabs, header nav ul, .alt{
+
+#Tabs, header nav ul, .alt {
     flex-direction: row;
 }
-body{
+
+body {
     grid-template-columns: 100%;
     grid-template-rows: var(--body-grid-var) auto;
-    grid-template-areas:
-        "header"
-        "main";
+    grid-template-areas: "header" "main";
 }
 
 /********************/
+
 /* HEADERS */
-header{
+
+header {
     grid-area: header;
     background: var(--header-bacground);
     color: var(--header-color);
     grid-template-columns: auto 1fr auto;
     grid-template-rows: calc(var(--header-alt-height)) var(--header-tab-height);
-    grid-template-areas: 
-        "alt drag nav"
-        "tabs tabs tabs";
+    grid-template-areas: "alt drag nav" "tabs tabs tabs";
 }
-header nav{
+
+header nav {
     grid-area: nav;
 }
-header nav ul{
+
+header nav ul {
     display: flex;
 }
-header nav ul div{
+
+header nav ul div {
     width: calc(var(--header-alt-height) + 12px);
     height: calc(var(--header-alt-height));
     display: flex;
     justify-content: center;
     align-items: center;
 }
-header nav ul div:hover{
+
+header nav ul div:hover {
     background: rgba(253, 255, 252, 0.2);
 }
-header nav ul div img{
+
+header nav ul div img {
     width: calc(var(--header-alt-height) - 8px);
     filter: invert(1);
 }
 
 /********************/
+
 /* ALTS */
-.alt{
+
+.alt {
     grid-area: alt;
     display: flex;
 }
-.alt a{
+
+.alt a {
     height: 100%;
     padding: 0 8px;
     line-height: var(--header-alt-height);
     cursor: default;
 }
-.alt a:hover{
+
+.alt a:hover {
     background: rgba(253, 255, 252, 0.2);
 }
 
 /********************/
+
 /* TABS */
-#Tabs{
+
+#Tabs {
     grid-area: tabs;
     display: flex;
 }
-#Tabs .tab{
+
+#Tabs .tab {
     cursor: default;
     padding: 0 8px;
     display: flex;
@@ -110,33 +121,41 @@ header nav ul div img{
     align-items: center;
     font-size: 0.8em;
 }
-#Tabs .tab.active{
+
+#Tabs .tab.active {
     background: rgba(253, 255, 252, 0.3);
 }
-#Tabs .tab:hover{
+
+#Tabs .tab:hover {
     background: rgba(253, 255, 252, 0.2);
 }
-#close-btn:hover{
+
+#close-btn:hover {
     background: var(--header-close-second);
 }
 
 /********************/
+
 /* MAINS */
-main{
+
+main {
     grid-area: main;
     height: calc( 100vh - var(--body-grid-var));
 }
-main #WorkSpace, main textarea{
+
+main #WorkSpace, main textarea {
     width: 100%;
     height: 100%;
 }
-main textarea{
+
+main textarea {
     resize: none;
     padding: 8px;
     font-size: 16px;
     background: transparent;
 }
-.modal{
+
+.modal {
     grid-area: modal;
     /* display: none; */
     position: fixed;
@@ -144,10 +163,12 @@ main textarea{
     left: 50%;
     transform: translate(-50%, -50%);
 }
-.modal.close{
+
+.modal.close {
     display: none;
 }
-.block{
+
+.block {
     display: flex;
     width: 400px;
     height: auto;
@@ -155,22 +176,31 @@ main textarea{
     border: 1px solid var(--header-bacground);
     flex-direction: column;
 }
-.block input{
+
+.block input, .block .text {
     padding: 8px;
 }
-.block .button_s{
+
+.block .text {
+    color: var(--main-bacground);
+}
+
+.block .button_s {
     display: flex;
     flex-direction: row;
 }
-.block .button_s .button{
+
+.block .button_s .button {
     padding: 8px;
     min-width: 50%;
     max-width: 100%;
     background: #043863;
 }
-.block .button_s .button.cancel{
+
+.block .button_s .button.cancel {
     background: #E4665C;
 }
-.block.x{
+
+.block.x {
     display: none;
 }
